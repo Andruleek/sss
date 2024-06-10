@@ -41,3 +41,35 @@ async def delete_contact(contact_id: int):
         raise HTTPException(status_code=404, detail="Contact not found")
     repository.delete_contact(contact_id)
     return JSONResponse(content={"message": "Contact deleted successfully"}, media_type="application/json")
+
+@app.route('/contacts', methods=['GET'])
+def get_contacts():
+    return jsonify([contact.__dict__ for contact in repository.get_contacts_by_birthday()])
+
+@app.route('/contacts/name/<string:name>', methods=['GET'])
+def get_contact_by_name(name):
+    contact = repository.get_contact_by_name(name)
+    if contact:
+        return jsonify(contact.__dict__)
+    else:
+        return jsonify({'error': 'Contact not found'}), 404
+
+@app.route('/contacts/surname/<string:surname>', methods=['GET'])
+def get_contact_by_surname(surname):
+    contact = repository.get_contact_by_surname(surname)
+    if contact:
+        return jsonify(contact.__dict__)
+    else:
+        return jsonify({'error': 'Contact not found'}), 404
+
+@app.route('/contacts/email/<string:email>', methods=['GET'])
+def get_contact_by_email(email):
+    contact = repository.get_contact_by_email(email)
+    if contact:
+        return jsonify(contact.__dict__)
+    else:
+        return jsonify({'error': 'Contact not found'}), 404
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
